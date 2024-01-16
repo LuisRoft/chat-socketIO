@@ -18,8 +18,8 @@ async def connect(sid, environ, auth):
 
 
 @sio_server.event
-async def chat(sid, message):
-    await sio_server.emit('chat', {'sid': sid, 'message': message})
+async def chat(sid, message, username):
+    await sio_server.emit('chat', {'sid': sid, 'message': message, 'username': username})
 
 
 @sio_server.event

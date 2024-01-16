@@ -7,10 +7,9 @@ const socket = io('http://127.0.0.1:8000', {
     path: '/sockets',
 })
 
-export default function Chat() {
+export default function Chat({ username }) {
     const [isConnected, setIsConnected] = useState(socket.connected)
     const [messages, setMessages] = useState([])
-    const [user, setUser] = useState('')
     const [message, setMessage] = useState('')
     
     useEffect(() => {
@@ -23,6 +22,7 @@ export default function Chat() {
         };
     
         const handleJoin = (data) => {
+            // socket.emit('join', username);
           setMessages((prevMessages) => [...prevMessages, { ...data, type: 'join' }]);
         };
 
@@ -33,6 +33,7 @@ export default function Chat() {
         const handleChat = (data) => {
             setMessages((prevMessages) => [...prevMessages, { ...data, type: 'chat' }]);
         }
+    
     
         // Agrega event listeners
         socket.on('connect', handleConnect);
@@ -51,6 +52,8 @@ export default function Chat() {
         };
       }, []);
 
+      
+
     return (
         <div className="flex flex-col h-[800px] w-[800px] rounded-2xl overflow-auto bg-[#3F7C85]">
             <div className="px-8 py-4 bg-[#00CCBF]">
@@ -59,7 +62,7 @@ export default function Chat() {
                     <h2>
                         Status: <span className={`${isConnected ? 'text-green-700' : 'text-red-500'}`}>{isConnected ? 'connected' : 'disconnected'}</span>
                     </h2>
-                    <h2>User: Luis</h2>
+                    <h2>User: {username}</h2>
                 </div>
             </div>
             <div className="flex flex-col flex-1 px-8 py-4 overflow-y-scroll">
@@ -79,7 +82,7 @@ export default function Chat() {
                 <button 
                     onClick={() => {
                         if (message && message.length > 0) {
-                            socket.emit('chat', message)
+                            socket.emit('chat', message, username)
                             setMessage('')
                         }
                         let messageBox = document.getElementById('message')
@@ -90,7 +93,5 @@ export default function Chat() {
                 </button>
             </div>
         </div>
-
-
     )
   }
